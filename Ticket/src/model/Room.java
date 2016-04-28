@@ -15,7 +15,6 @@ import java.util.ArrayList;
 public class Room {
     private int id;
     private String name;
-    private String address;
     private ArrayList<Seat> listSeat;
     private int size;
     private String description;
@@ -24,11 +23,10 @@ public class Room {
         super();
     }
 
-    public Room(int id, String name, String address, ArrayList<Seat> listSeat, int size, String description) {
+    public Room(int id, String name, ArrayList<Seat> listSeat, int size, String description) {
         super();
         this.id = id;
         this.name = name;
-        this.address = address;
         this.listSeat = listSeat;
         this.size = size;
         this.description = description;
@@ -48,14 +46,6 @@ public class Room {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public ArrayList<Seat> getListSeat() {

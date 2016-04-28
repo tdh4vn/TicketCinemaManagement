@@ -5,18 +5,23 @@
  */
 package view;
 
+import interf.OpenEditRoomFrmInterface;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.GridLayout;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import model.Room;
 
 /**
  *
@@ -28,7 +33,7 @@ public class SearchRoomFrm extends JFrame{
     private JTextField txtRoomName;
     private JButton btnSearch;
     private JTable tblResult;
-    private ArrayList<JButton> btnSelects;
+    private OpenEditRoomFrmInterface openEditRoomFrmInterface;
    
     public SearchRoomFrm(){
         super("Search Room");
@@ -37,8 +42,7 @@ public class SearchRoomFrm extends JFrame{
         txtRoomID = new JTextField(15);
         txtRoomName = new JTextField(15);
         btnSearch = new JButton("Search");
-        btnSelects = new ArrayList<JButton>();
-        String[] columns = {"ID", "Name", "Size", "Action"};
+        String[] columns = {"ID", "Name", "Size", "Description", "Action"};
         DefaultTableModel dtm = new DefaultTableModel();
         dtm.setColumnIdentifiers(columns);
         tblResult = new JTable(dtm);
@@ -52,11 +56,91 @@ public class SearchRoomFrm extends JFrame{
         this.setLayout(new BorderLayout());
         this.add(panelSearchTools, BorderLayout.NORTH);
         this.add(jScrollPane, BorderLayout.CENTER);
-        this.setVisible(true);
     }
-    public static void main(String[] args) {
-        SearchRoomFrm searchRoomFrm = new SearchRoomFrm();
-        
+    /**
+     * Phuong thuc lay ID cua Room can tim
+     * @param null
+     * @return String chua ID cua Room can tim
+     * @author HungTD
+    */
+    public String getRoomID(){
+        return txtRoomID.getText();
     }
     
+    /**
+     * Phuong thuc lay Name cua Room can tim
+     * @param null
+     * @return String chua Name cua Room can tim
+     * @author HungTD
+    */
+    public String getRoomName(){
+        return txtRoomName.getText();
+    }
+    public void addSearchListener(ActionListener actionListener){
+        btnSearch.addActionListener(actionListener);
+    }
+    
+    public void fillTable(ArrayList<Room> rooms){
+        String[] columns = {"ID", "Name", "Size", "Description", "Action"};
+        DefaultTableModel dtm = new DefaultTableModel();
+        dtm.setColumnIdentifiers(columns);
+        for(Room room : rooms){
+            Object[] objects = new Object[5];
+            objects[0] = room.getId();
+            objects[1] = room.getName();
+            objects[2] = room.getSize();
+            objects[3] = room.getDescription();
+            objects[4] = "Edit";
+            dtm.addRow(objects);
+        }
+        tblResult.setModel(dtm); 
+        tblResult.getColumn("Action").setCellRenderer(new TableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                    boolean hasFocus, int row, int column) {
+                if (hasFocus) {
+                    if (column == 4) {
+                        openEditRoomFrmInterface.openEditRoomFrm(rooms.get(row));
+                    }
+                }
+                return new JButton("Edit");
+            }
+        });
+    }
+    public void fillTable(Room room){
+        String[] columns = {"ID", "Name", "Size", "Description", "Action"};
+        DefaultTableModel dtm = new DefaultTableModel();
+        dtm.setColumnIdentifiers(columns);
+        
+        Object[] objects = new Object[5];
+        objects[0] = room.getId();
+        objects[1] = room.getName();
+        objects[2] = room.getSize();
+        objects[3] = room.getDescription();
+        objects[4] = "Edit";
+        dtm.addRow(objects);
+        
+        tblResult.setModel(dtm); 
+        tblResult.getColumn("Action").setCellRenderer(new TableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                    boolean hasFocus, int row, int column) {
+                if (hasFocus) {
+                    if (column == 4) {
+                        openEditRoomFrmInterface.openEditRoomFrm(room);
+                    }
+                }
+                return new JButton("Edit");
+            }
+        });
+    }
+    
+    public void showMessage(String msg){
+        JOptionPane.showMessageDialog(this, msg);
+    }
+
+    
+    public void setEditRoomAction(OpenEditRoomFrmInterface editRoomFrmInterface){
+        this.openEditRoomFrmInterface = editRoomFrmInterface;
+    }
 }
